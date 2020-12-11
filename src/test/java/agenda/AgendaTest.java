@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.time.LocalTime;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +21,9 @@ public class AgendaTest {
 
     // November 1st, 2020, 22:30
     LocalDateTime nov_1__2020_22_30 = LocalDateTime.of(2020, 11, 1, 22, 30);
+    
+    //January 3, 2021, 22:30
+    LocalDateTime jan_3__2021_22_30 = LocalDateTime.of(2021, 1, 3, 22, 30);
 
     // 120 minutes
     Duration min_120 = Duration.ofMinutes(120);
@@ -27,6 +31,10 @@ public class AgendaTest {
     // A simple event
     // November 1st, 2020, 22:30, 120 minutes
     Event simple = new Event("Simple event", nov_1__2020_22_30, min_120);
+    
+    // 2eme simple event
+    //January 5, 2021, 22:30
+    Event simple2 = new Event("Simple event 2", jan_3__2021_22_30, min_120);
 
     // A Weekly Repetitive event ending at a given date
     RepetitiveEvent fixedTermination = new FixedTerminationEvent("Fixed termination weekly", nov_1__2020_22_30, min_120, ChronoUnit.WEEKS, jan_5_2021);
@@ -53,5 +61,16 @@ public class AgendaTest {
         assertTrue(agenda.eventsInDay(nov_1_2020).contains(neverEnding));
     }
 
+    @Test 
+    public void testFindByTitle(){
+        assertTrue(agenda.findByTitle("Simple event").contains(simple));
+        assertFalse(agenda.findByTitle("Simple event").contains(simple2));
+    }
 
+    @Test 
+    public void testIsFreeFor(){
+        Event simpleE2 = new Event("Simple event n2", jan_3__2021_22_30, min_120);
+        assertFalse(agenda.isFreeFor(simple));
+        assertTrue(agenda.isFreeFor(simpleE2));
+    }
 }
