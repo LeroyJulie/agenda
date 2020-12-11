@@ -2,6 +2,8 @@ package agenda;
 
 import java.time.*;
 import java.time.chrono.ChronoLocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 
 public class Event {
 
@@ -71,7 +73,7 @@ public class Event {
     }
 //ToString   
     public String toString() {
-        return "Titre événement : " + this.getTitle() + "Début: " + this.getStart() + "Durée: " + this.getDuration() ;
+           return this.myTitle+" = {"+this.myStart+", "+this.myDuration+"}";
     }
    
     

@@ -1,6 +1,7 @@
 package agenda;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -8,7 +9,7 @@ import java.util.*;
  */
 public class Agenda {
     
-    public HashSet<Event> mesEvents = new HashSet<Event>();
+    public HashSet<Event> Events = new HashSet<Event>();
 
     /**
      * Adds an event to this agenda
@@ -16,7 +17,7 @@ public class Agenda {
      * @param e the event to add
      */
     public void addEvent(Event e) {
-        this.mesEvents.add(e);
+        this.Events.add(e);
     }
 
     /**
@@ -26,14 +27,11 @@ public class Agenda {
      * @return and iteraror to the events that occur on that day
      */
     public List<Event> eventsInDay(LocalDate day) {
-        ArrayList<Event> today = new ArrayList();
-        for (Event e : mesEvents) {
-            if (e.isInDay(day)) {
-                today.add(e);
-            }
-
-        }
-        return today;
+        HashSet<Event> ListeEvent=new HashSet();
+        events.stream().filter(e -> (e.isInDay(day))).forEachOrdered(e -> {
+            ListeEvent.add(e);
+        });
+        return ListeEvent;
     }
 
     /**
@@ -44,7 +42,7 @@ public class Agenda {
      */
     public List<Event> findByTitle(String title) {
         ArrayList titres = new ArrayList();
-        for (Event e : mesEvents) {
+        for (Event e : Events) {
             if (e.getTitle().equals(title)) {
                 titres.add(e);
             }
@@ -59,15 +57,17 @@ public class Agenda {
      * @return vrai s’il y a de la place dans l'agenda pour cet événement
      */
     public boolean isFreeFor(Event e) {
-        for (Event ev : mesEvents) {
-            if (ev.getStart().isEqual(e.getStart()) 
-                    || ev.getStart().isAfter(e.getStart()) && ev.getStart().isBefore(e.getStart().plus(e.getDuration()))
-                    || ev.getStart().isEqual(e.getStart())
-                    || (ev.getStart().plus(ev.getDuration()).isAfter(e.getStart()) && ev.getStart().plus(ev.getDuration()).isBefore(e.getStart().plus(e.getDuration())))
-                    || ev.getStart().plus(ev.getDuration()).isEqual(e.getStart().plus(e.getDuration()))) {
-                return false;
-            }
-        }
+        for(Event ev:events){
+            LocalDateTime evEnd=ev.getStart().plus(ev.getDuration());//Date de fin des events programmé
+            LocalDateTime eEnd=e.getStart().plus(e.getDuration());//Date de fin des events programmé
+            LocalDateTime evStart=ev.getStart();//Date de début des events programmé
+            LocalDateTime eStart=e.getStart();//Date de début des events programmé
+            
+         if( ev.getStart().equals(e.getStart())||
+                 (evStart.isBefore(eStart) && evEnd.isAfter(eEnd)) ) {
+                 
+            return false;}
+         }
         return true;
     }
 }

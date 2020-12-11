@@ -64,18 +64,6 @@ public class FixedTerminationEvent extends RepetitiveEvent {
     public long getNumberOfOccurrences() {
        return occurences;
        
-    private LocalDate calculDateFin() {
-        switch (this.frequency) {
-            case DAYS:
-                return this.getStart().plus(this.getNumberOfOccurrences() - 1, ChronoUnit.DAYS).toLocalDate();
-            case WEEKS:
-                return this.getStart().plus(this.getNumberOfOccurrences() - 1, ChronoUnit.WEEKS).toLocalDate();
-            case MONTHS:
-                return this.getStart().plus(this.getNumberOfOccurrences() - 1, ChronoUnit.MONTHS).toLocalDate();
-            default:
-                return this.getStart().toLocalDate();
-        }
-    }
     
     public long calculOccurrences(){
         return this.getStart().toLocalDate().until(dateFin, frequency) + 1;

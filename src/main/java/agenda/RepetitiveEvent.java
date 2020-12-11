@@ -9,9 +9,12 @@ import java.time.temporal.ChronoUnit;
  */
 public class RepetitiveEvent extends Event {
     
-    public Duration duration;
-    public ChronoUnit frequency;
-    public ArrayList<LocalDate> exceptions;
+   private HashSet<LocalDate> exceptions = new HashSet<>();
+    private ChronoUnit frequency;
+
+    public HashSet<LocalDate> getExceptions() {
+        return exceptions;
+    }
     
     /**
      * Constructs a repetitive event
@@ -27,10 +30,8 @@ public class RepetitiveEvent extends Event {
      * </UL>
      */
     public RepetitiveEvent(String title, LocalDateTime start, Duration duration, ChronoUnit frequency) {
-        super(title, start, duration);
+     super(title, start, duration);
         this.frequency = frequency;
-        this.duration = duration;
-        this.exceptions = new ArrayList();
     }
 
     /**
@@ -50,30 +51,25 @@ public class RepetitiveEvent extends Event {
         return this.frequency;
         
         @Override
-    public boolean isInDay(LocalDate aDay) {
-        if (exceptions.contains(aDay)) {
+    public boolean isInDay(LocalDate aDay){
+        LocalDate cpt = this.getStart().toLocalDate();
+        if (exceptions.contains(aDay)){
             return false;
         }
-        switch (this.frequency) {
-            case DAYS:
-                return this.getStart().toLocalDate().equals(aDay) || this.getStart().toLocalDate().isBefore(aDay);
-            case WEEKS:
-                for (int i = 0; i < 53; i++) {
-                    if (this.getStart().toLocalDate().plus(i, ChronoUnit.WEEKS).equals(aDay)) {
-                        return true;
-                    }
-                }
-                return false;
-            case MONTHS:
-                for (int i = 0; i < 12; i++) {
-                    if (this.getStart().toLocalDate().plus(i, ChronoUnit.MONTHS).equals(aDay)) {
-                        return true;
-                    }
-                }
-                return false;
+        while (cpt.isBefore(aDay)){
+            switch (this.frequency){
+                case DAYS:
+                    cpt=cpt.plusDays(1);
+                    break;
+                case WEEKS:
+                    cpt=cpt.plusWeeks(1);
+                    break;
+                case MONTHS:
+                    cpt=cpt.plusMonths(1);
+                    break;
+            }
         }
-
-        return this.getStart().toLocalDate().equals(aDay);
+        return cpt.isEqual(aDay);
     }
 
 }
